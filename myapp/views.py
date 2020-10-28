@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse,JsonResponse
-from django.template import loader
+# from django.template import loader
+from .forms import *
 # import firstDjango
 import os
 # Create your views here.
@@ -46,3 +47,24 @@ def mythirdpage(request):
 
 def myimagepage(request):
     return render(request,'image.html')
+
+def myform(request):
+    return render(request,'form.html')
+
+def submitform(request):
+    mydictionary = {
+        "eamil":request.POST['email'],
+        "password":request.POST['password'],
+        "method": request.method
+    }
+    return JsonResponse(mydictionary)
+
+def myform2(request):
+    if request.method == "POST":
+        pass
+    elif request.method == "GET":
+        form = FeebackForm()
+        mydictionary={
+            "form":form
+        }
+        return render(request,'myform2.html',context=mydictionary)
