@@ -61,10 +61,47 @@ def submitform(request):
 
 def myform2(request):
     if request.method == "POST":
-        pass
+        form = FeebackForm(request.POST)
+        if form.is_valid():
+            title = request.POST['title']
+            subject = request.POST['subject']
+            email = request.POST['email']
+            mydictionary = {
+                "form":FeebackForm()
+            }
+            errorFlag=False;
+            Errors = []
+            if title != title.upper():
+                errorFlag = True
+                errormsg = "Title should be capital"
+                Errors.append(errormsg)
+
+            import re
+            regex = '(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)'
+            if not re.search(regex,email):
+                errorFlag=True
+                errormsg="Not a valid email"
+                Errors.append(errormsg)
+            if errorFlag!=True:
+
+                mydictionary["success"]=True
+                mydictionary["successmsg"]="Form Submitterd"
+            
+            mydictionary["error"]=errorFlag
+            mydictionary["errors"]=Errors
+            return render(request,'myform2.html',context=mydictionary)
+        else:
+            mydictionary={
+                "form":form
+            }
+            return render(request,'myform2.html',context=mydictionary)
+
     elif request.method == "GET":
         form = FeebackForm()
         mydictionary={
             "form":form
         }
         return render(request,'myform2.html',context=mydictionary)
+
+def error_404_view(request,exception):
+    return render(request,'404.html')
